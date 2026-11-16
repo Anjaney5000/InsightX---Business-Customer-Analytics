@@ -7,6 +7,7 @@ InsightX is a reproducible analytics project for understanding online shopping b
 - **Customer-session conversion modelling:** an XGBoost classifier trained on the UCI Online Shoppers Purchasing Intention dataset.
 - **Review sentiment modelling:** fine-tune a BERT sequence classifier on customer-written clothing reviews. Labels are derived transparently from star ratings: 1–2 negative, 3 neutral, 4–5 positive.
 - **Explainability:** SHAP TreeExplainer explanations for the XGBoost model, including global feature importance and individual-session explanations.
+- **Behavioural segmentation:** KMeans clusters shopping sessions using browsing metrics and visitor/session attributes. Revenue is excluded from clustering and used only to profile segment conversion rates.
 - **Dashboard:** Streamlit overview of session purchase behaviour and review trends.
 
 The session dataset and review dataset are analysed independently. They do not share customer identifiers, so this repository does not join them or claim a customer-level link between a purchase session and a review.
@@ -39,6 +40,14 @@ python src/train_conversion.py
 ```
 
 The script saves a fitted preprocessing + XGBoost pipeline to `models/conversion_pipeline.joblib`, metrics to `reports/conversion_metrics.json`, and SHAP plots to `reports/`.
+
+### Segment shopping sessions
+
+\`\`\`bash
+python src/segment_sessions.py
+\`\`\`
+
+The script writes session-level cluster assignments and segment profiles to \`reports/\`. The source dataset represents one session per user in its sample period, so these are session segments rather than persistent customer identities.
 
 ### Fine-tune BERT for sentiment
 
