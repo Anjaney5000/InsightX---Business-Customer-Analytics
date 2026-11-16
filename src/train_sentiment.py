@@ -127,6 +127,10 @@ def main():
     REPORTS.mkdir(exist_ok=True)
     metrics = {
         "source_rows_used": int(len(df)),
+        "model_name": args.model_name,
+        "epochs": args.epochs,
+        "batch_size": args.batch_size,
+        "max_length": args.max_length,
         "train_rows": int(len(train_ds)),
         "validation_rows": int(len(val_ds)),
         "label_mapping": LABELS,
