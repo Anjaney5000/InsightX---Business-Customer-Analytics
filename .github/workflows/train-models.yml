@@ -1,0 +1,87 @@
+name: Train InsightX models
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/train-models.yml"
+      - "requirements.txt"
+      - "data/download_data.py"
+      - "src/**"
+      - "app.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: insightx-training
+  cancel-in-progress: false
+
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      TOKENIZERS_PARALLELISM: "false"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TRANSFORMERS_NO_ADVISORY_WARNINGS: "1"
+      MPLBACKEND: "Agg"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install CPU PyTorch
+        run: pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.3"
+      - name: Install project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Download public datasets
+        run: python data/download_data.py
+      - name: Train XGBoost purchase-intent model and produce SHAP report
+        run: python src/train_conversion.py
+      - name: Segment online shopping sessions
+        run: python src/segment_sessions.py
+      - name: Fine-tune BERT on all review records
+        run: python src/train_sentiment.py --epochs 1 --batch-size 16 --max-length 128
+      - name: Verify generated metrics
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          required = [
+              "reports/conversion_metrics.json",
+              "reports/sentiment_metrics.json",
+              "reports/conversion_shap_summary.png",
+              "reports/session_segment_profiles.csv",
+          ]
+          missing = [p for p in required if not Path(p).exists()]
+          if missing:
+              raise SystemExit(f"Missing expected outputs: {missing}")
+          for p in required[:2]:
+              data = json.loads(Path(p).read_text())
+              print(p, {k: data.get(k) for k in ("accuracy", "precision", "recall", "f1", "roc_auc", "macro_f1") if k in data})
+          PY
+      - name: Upload models and complete reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: insightx-trained-models-and-reports
+          path: |
+            models/
+            reports/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Commit generated evaluation reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f reports/*.json reports/*.csv reports/*.png
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+          else
+            git commit -m "Add generated InsightX training reports"
+            git push
+          fi
