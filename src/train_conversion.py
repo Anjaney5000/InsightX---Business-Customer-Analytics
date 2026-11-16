@@ -30,7 +30,18 @@ def main() -> None:
     df = pd.read_csv(DATA)
     if "Revenue" not in df:
         raise ValueError("Expected target column 'Revenue' in UCI session data.")
-    y = df.pop("Revenue").astype(int)
+    raw_target = df.pop("Revenue")
+    if raw_target.dtype == bool:
+        y = raw_target.astype(int)
+    elif pd.api.types.is_numeric_dtype(raw_target):
+        y = raw_target.astype(int)
+    else:
+        mapped = raw_target.astype(str).str.strip().str.lower().map(
+            {"true": 1, "false": 0, "yes": 1, "no": 0, "1": 1, "0": 0}
+        )
+        if mapped.isna().any():
+            raise ValueError("Revenue target must contain booleans or Yes/No values.")
+        y = mapped.astype(int)
     X = df.copy()
 
     categorical = X.select_dtypes(include=["object", "bool", "category"]).columns.tolist()
