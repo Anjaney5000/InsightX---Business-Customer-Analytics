@@ -1,0 +1,14 @@
+pandas>=2.2,<3
+numpy>=1.26,<3
+scikit-learn>=1.5,<2
+xgboost>=2.1,<4
+shap>=0.46,<1
+matplotlib>=3.9,<4
+streamlit>=1.39,<2
+ucimlrepo>=0.0.7
+datasets>=3.0,<5
+transformers>=4.46,<5
+torch>=2.3
+accelerate>=1.0
+pyarrow>=17
+joblib>=1.4
