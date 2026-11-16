@@ -1,0 +1,51 @@
+{
+  "source_rows_used": 4999,
+  "model_name": "distilbert-base-uncased",
+  "epochs": 1,
+  "batch_size": 16,
+  "max_length": 96,
+  "train_rows": 3999,
+  "validation_rows": 1000,
+  "label_mapping": {
+    "negative": 0,
+    "neutral": 1,
+    "positive": 2
+  },
+  "accuracy": 0.822,
+  "macro_f1": 0.51884298683769,
+  "classification_report": {
+    "negative": {
+      "precision": 0.5294117647058824,
+      "recall": 0.08653846153846154,
+      "f1-score": 0.1487603305785124,
+      "support": 104.0
+    },
+    "neutral": {
+      "precision": 0.4,
+      "recall": 0.56,
+      "f1-score": 0.4666666666666667,
+      "support": 125.0
+    },
+    "positive": {
+      "precision": 0.9195544554455446,
+      "recall": 0.9636835278858625,
+      "f1-score": 0.9411019632678911,
+      "support": 771.0
+    },
+    "accuracy": 0.822,
+    "macro avg": {
+      "precision": 0.616322073383809,
+      "recall": 0.5367406631414414,
+      "f1-score": 0.51884298683769,
+      "support": 1000.0
+    },
+    "weighted avg": {
+      "precision": 0.8140353086779266,
+      "recall": 0.822,
+      "f1-score": 0.7993940213930427,
+      "support": 1000.0
+    }
+  },
+  "label_note": "Weak labels derived from star rating, not human sentiment annotation.",
+  "device": "cpu"
+}

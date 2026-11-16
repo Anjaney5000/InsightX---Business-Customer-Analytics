@@ -1,0 +1,26 @@
+{
+  "algorithm": "KMeans",
+  "clusters": 4,
+  "random_state": 42,
+  "feature_columns": [
+    "Administrative",
+    "Administrative_Duration",
+    "Informational",
+    "Informational_Duration",
+    "ProductRelated",
+    "ProductRelated_Duration",
+    "BounceRates",
+    "ExitRates",
+    "PageValues",
+    "SpecialDay",
+    "Month",
+    "OperatingSystems",
+    "Browser",
+    "Region",
+    "TrafficType",
+    "VisitorType",
+    "Weekend"
+  ],
+  "target_excluded_from_clustering": "Revenue",
+  "interpretation": "Clusters describe session behaviour; they are not stable person-level customer identities."
+}
