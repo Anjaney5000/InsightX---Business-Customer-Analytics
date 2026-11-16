@@ -59,7 +59,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--batch-size", type=int, default=8)
-    parser.add_argument("--max-length", type=int, default=128,\n                        help="Maximum token length for BERT inputs.")\n    parser.add_argument("--max-samples", type=int, default=0,
+    parser.add_argument("--max-length", type=int, default=128,
+                        help="Maximum token length for BERT inputs.")
+    parser.add_argument("--max-samples", type=int, default=0,
                         help="Optional cap for quick experiments; 0 uses all rows.")
     parser.add_argument("--model-name", default="bert-base-uncased")
     args = parser.parse_args()
