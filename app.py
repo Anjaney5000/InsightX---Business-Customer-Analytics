@@ -28,7 +28,18 @@ with tab1:
     if sessions is None:
         st.warning("Download the UCI session dataset to view this section.")
     else:
-        revenue = sessions["Revenue"].astype(bool)
+        revenue_raw = sessions["Revenue"]
+        if revenue_raw.dtype == bool:
+            revenue = revenue_raw
+        elif pd.api.types.is_numeric_dtype(revenue_raw):
+            revenue = revenue_raw.astype(int).astype(bool)
+        else:
+            revenue = revenue_raw.astype(str).str.strip().str.lower().map(
+                {"true": True, "false": False, "yes": True, "no": False, "1": True, "0": False}
+            )
+            if revenue.isna().any():
+                st.error("Revenue must contain boolean or Yes/No values.")
+                st.stop()
         c1, c2, c3 = st.columns(3)
         c1.metric("Sessions", f"{len(sessions):,}")
         c2.metric("Purchase sessions", f"{int(revenue.sum()):,}")
