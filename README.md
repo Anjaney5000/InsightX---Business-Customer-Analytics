@@ -13,8 +13,8 @@ The session dataset and review dataset are analysed independently. They do not s
 
 ## Data sources
 
-1. **UCI Online Shoppers Purchasing Intention** — 12,330 sessions and 18 features; target is `Revenue`. The data is imbalanced (about 15.5% purchase sessions).  
-   https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset
+1. **UCI Online Shoppers Purchasing Intention** — 12,330 sessions and 17 predictor features plus the Revenue target; target is `Revenue`. The data is imbalanced (about 15.5% purchase sessions).  
+   https://archive.ics.uci.edu/dataset/468/online
 2. **Women's E-Commerce Clothing Reviews** — 23,486 anonymised customer reviews. Downloaded via the Hugging Face mirror; upstream source is the Kaggle dataset and the mirror documents CC0-1.0.  
    https://huggingface.co/datasets/chibifire/kaggle-womens-ecom-clothing-reviews  
    Upstream: https://www.kaggle.com/datasets/nicapotato/womens-ecommerce-clothing-reviews
