@@ -55,7 +55,7 @@ The script writes session-level cluster assignments and segment profiles to \`re
 python src/train_sentiment.py --epochs 2 --max-samples 0
 ```
 
-This step is compute-intensive and may need a GPU. Set `--max-samples` to a smaller number for a smoke test. The fine-tuned model is saved under `models/bert_sentiment/`. It is not run automatically by the dashboard.
+This step is compute-intensive. The reproducible GitHub Actions training workflow uses the full review dataset for one epoch with 128-token inputs on CPU; a local GPU can be used for more epochs. To reproduce the workflow locally, run `python src/train_sentiment.py --epochs 1 --batch-size 16 --max-length 128`. Set `--max-samples 1000` for a quick smoke test. The fine-tuned model is saved under `models/bert_sentiment/`.
 
 ### Launch the dashboard
 
@@ -90,6 +90,10 @@ The dashboard can run after data download; model training is optional for its de
 - Sentiment classes are rating-derived weak labels; they are not independently human-annotated sentiment ground truth.
 - The UCI session data is a tabular session snapshot, not a raw event stream. It supports session-level purchase-intent analysis, not user journey reconstruction.
 - Results should be generated locally and reported only after running the scripts. No benchmark scores are hard-coded in this repository.
+
+## Automated training and generated reports
+
+The [Train InsightX models workflow](https://github.com/Anjaney5000/InsightX---Business-Customer-Analytics/actions/workflows/train-models.yml) downloads both datasets, trains XGBoost, performs KMeans segmentation, fine-tunes BERT, and generates evaluation reports. Metrics and plots are committed under `reports/`; trained model binaries are attached to the workflow run as a downloadable artifact (30-day retention).
 
 ## Reproducibility
 
