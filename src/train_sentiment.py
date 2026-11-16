@@ -59,7 +59,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--batch-size", type=int, default=8)
-    parser.add_argument("--max-samples", type=int, default=0,
+    parser.add_argument("--max-length", type=int, default=128,\n                        help="Maximum token length for BERT inputs.")\n    parser.add_argument("--max-samples", type=int, default=0,
                         help="Optional cap for quick experiments; 0 uses all rows.")
     parser.add_argument("--model-name", default="bert-base-uncased")
     args = parser.parse_args()
@@ -94,8 +94,8 @@ def main():
         id2label={v: k for k, v in LABELS.items()},
         label2id=LABELS
     )
-    train_ds = ReviewDataset(train_text, train_y, tokenizer)
-    val_ds = ReviewDataset(val_text, val_y, tokenizer)
+    train_ds = ReviewDataset(train_text, train_y, tokenizer, max_length=args.max_length)
+    val_ds = ReviewDataset(val_text, val_y, tokenizer, max_length=args.max_length)
     train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_ds, batch_size=args.batch_size)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
