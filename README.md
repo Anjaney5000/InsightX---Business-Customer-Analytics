@@ -43,9 +43,9 @@ The script saves a fitted preprocessing + XGBoost pipeline to `models/conversion
 
 ### Segment shopping sessions
 
-\`\`\`bash
+```bash
 python src/segment_sessions.py
-\`\`\`
+```
 
 The script writes session-level cluster assignments and segment profiles to \`reports/\`. The source dataset represents one session per user in its sample period, so these are session segments rather than persistent customer identities.
 
@@ -55,7 +55,7 @@ The script writes session-level cluster assignments and segment profiles to \`re
 python src/train_sentiment.py --epochs 2 --max-samples 0
 ```
 
-This step is compute-intensive. The reproducible GitHub Actions training workflow uses the full review dataset for one epoch with 128-token inputs on CPU; a local GPU can be used for more epochs. To reproduce the workflow locally, run `python src/train_sentiment.py --epochs 1 --batch-size 16 --max-length 128`. Set `--max-samples 1000` for a quick smoke test. The fine-tuned model is saved under `models/bert_sentiment/`.
+This step is compute-intensive. For a local full-data run, omit `--max-samples` (or set it to `0`); this may take substantial time on CPU. The automated GitHub Actions workflow uses a stratified sample of up to 5,000 reviews and `distilbert-base-uncased` for one epoch with 96-token inputs, so CI can finish on a CPU runner. To reproduce the CI experiment locally, run `python src/train_sentiment.py --epochs 1 --batch-size 16 --max-length 96 --max-samples 5000 --model-name distilbert-base-uncased`. The generated sentiment report records the model name, sample size, training configuration, and that labels are weak labels derived from ratings. The fine-tuned model is saved under `models/bert_sentiment/`.
 
 ### Launch the dashboard
 
@@ -93,7 +93,7 @@ The dashboard can run after data download; model training is optional for its de
 
 ## Automated training and generated reports
 
-The [Train InsightX models workflow](https://github.com/Anjaney5000/InsightX---Business-Customer-Analytics/actions/workflows/train-models.yml) downloads both datasets, trains XGBoost, performs KMeans segmentation, fine-tunes BERT, and generates evaluation reports. Metrics and plots are committed under `reports/`; trained model binaries are attached to the workflow run as a downloadable artifact (30-day retention).
+The [Train InsightX models workflow](https://github.com/Anjaney5000/InsightX---Business-Customer-Analytics/actions/workflows/train-models.yml) downloads both datasets, trains XGBoost, performs KMeans segmentation, fine-tunes a DistilBERT sentiment classifier on a stratified 5,000-review sample, and generates evaluation reports. Metrics and plots are committed under `reports/`; trained model binaries are attached to the workflow run as a downloadable artifact (30-day retention).
 
 ## Reproducibility
 
