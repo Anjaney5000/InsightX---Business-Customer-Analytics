@@ -54,6 +54,14 @@ with tab1:
                 Sessions=("Revenue", "size"), Purchases=("Purchased", "sum")
             )
             st.bar_chart(month[["Sessions", "Purchases"]])
+        segment_profile = ROOT / "reports" / "session_segment_profiles.csv"
+        if segment_profile.exists():
+            st.markdown("#### Behavioural session segments")
+            profiles = pd.read_csv(segment_profile)
+            st.dataframe(profiles, use_container_width=True)
+            if "PurchaseRate" in profiles:
+                st.bar_chart(profiles.set_index("SessionSegment")["PurchaseRate"])
+
         with st.expander("Preview session data"):
             st.dataframe(sessions.head(100), use_container_width=True)
 
